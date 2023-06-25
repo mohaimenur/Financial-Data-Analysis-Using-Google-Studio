@@ -1,0 +1,109 @@
+## Create Table on MySQL or PostgreSQL database Follow the SQL_Table.jpeg file -,
+then write query ::: 
+i) “select count(*) from users”, Write an optimized query against this.
+ii) View all users and employers who get maximum salary from each group?
+iii) You want to delete everything of Users, write a query.
+iv) Get the second highest salary from the Users table and which users get them.
+v) How to get distinct records from the Names from users table without using distinct keyword.
+vi) How to find the count of duplicate rows from a table?
+vii) Remove duplicates from users but keep one.
+
+=======================================================================================================
+=======================================================================================================
+
+
+CREATE DATABASE office_management;
+
+CREATE TABLE employers(
+	id int,
+	name varchar(255),
+	role varchar(255),
+	salary int(20),
+	PRIMARY KEY(id)
+);
+
+INSERT INTO employers(id, name, role, salary)
+VALUES ('5588', 'Mr Rahim', 'Area Coordinator', '50000'),
+	('6677', 'Mr Karim', 'Regional Coordinator', '50000');
+
+
+CREATE TABLE users(
+    id int(20),
+    name varchar(255),
+    phone varchar(255),
+    role varchar(255),
+    salary int(20),
+    employers_id int(20),
+    FOREIGN KEY(employers_id) REFERENCES employers(id)
+    );
+
+INSERT INTO users(id, name, phone, role, salary, employers_id)
+VALUES ('7856', 'Mr Abul', '02255666777', 'BR', '25000', '5588'),
+	('7654', 'Mr Babul', '01177555666', 'Supervisor', '27500', '6677'),
+	('8768', 'Miss Jorina', '02299000111', 'BR', '40000', '5588'),
+	('5748', 'Mrs Morjina', '01155886644', 'BR', '38000', '5588'),
+	('5748', 'Mrs Morjina', '01155886644', 'BR', '38000', '5588');
+
+
+
+=======================================================================================================
+1. 
+SELECT COUNT(*) FROM users;
+
+SELECT COUNT(*) FROM users
+WHERE role='BR';
+
+2.
+SELECT name, role, MAX(salary) AS max_salary
+FROM users
+GROUP BY role
+UNION ALL
+SELECT name, role, MAX(salary) AS max_salary
+FROM employers
+GROUP BY role;
+
+
+3.
+TRUNCATE TABLE users; /
+DELETE FROM users;
+
+
+4.
+SELECT * FROM users 
+WHERE id IN 
+(SELECT id FROM users  
+WHERE salary = (SELECT MAX(salary) FROM users 
+WHERE salary < (SELECT MAX(salary) FROM users)));
+
+
+5.
+SELECT * FROM users
+GROUP BY name;
+/
+SELECT * FROM users
+UNION
+SELECT * FROM users;
+
+
+6.
+SELECT id, name, phone, role, salary, employers_id, COUNT(*) as duplicate_rows
+FROM users
+GROUP BY id, name, phone, role, salary, employers_id
+HAVING COUNT(*) > 1;
+
+
+7.
+SELECT id, name, phone, role, salary, employers_id
+FROM users
+GROUP BY id, name, phone, role, salary, employers_id;
+
+
+
+
+
+
+
+
+
+
+
